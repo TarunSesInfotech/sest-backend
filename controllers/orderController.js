@@ -2,43 +2,36 @@ const nodemailer = require("nodemailer");
 
 exports.sendOrderMail = async (req, res) => {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      city,
-      organization,
-      message
-    } = req.body;
+    const { firstName, lastName, email, phone, city, organization, message } =
+      req.body;
 
     // ✅ Validation
     if (!firstName || !lastName || !email || !phone || !city || !organization) {
       return res.status(400).json({
-        message: "All required fields must be filled"
+        message: "All required fields must be filled",
       });
     }
 
     // ✅ Transporter
-   const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  family: 4, // force IPv4
-  tls: {
-    rejectUnauthorized: false,
-  },
-  connectionTimeout: 30000,
-  greetingTimeout: 30000,
-  socketTimeout: 30000,
-});
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      family: 4, // force IPv4
+      tls: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 30000,
+    });
 
-     await transporter.verify();
+    await transporter.verify();
 
     // ✅ Mail Content
     const info = await transporter.sendMail({
@@ -65,7 +58,6 @@ exports.sendOrderMail = async (req, res) => {
       success: true,
       message: "Email sent successfully ✅",
     });
-
   } catch (error) {
     console.error("Contact Mail Error:", error);
 
