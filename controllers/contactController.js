@@ -30,7 +30,7 @@ exports.sendContactMail = async (req, res) => {
     // ✅ Mail content
     const info = await transporter.sendMail({
       from: `"SEST InfoTech Contact Form" <${process.env.EMAIL_USER}>`,
-      to: "tarun@sestinfotech.com",
+      to: "sest@sestinfotech.com",
       replyTo: email,
       subject: "New Contact Form Submission",
       html: `
