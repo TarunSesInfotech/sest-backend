@@ -21,19 +21,22 @@ exports.sendOrderMail = async (req, res) => {
 
     // ✅ Transporter
    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false, // 587 ke liye false
-      requireTLS: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-      family: 4, // 🔥 Force IPv4
-    });
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  requireTLS: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  family: 4, // force IPv4
+  tls: {
+    rejectUnauthorized: false,
+  },
+  connectionTimeout: 30000,
+  greetingTimeout: 30000,
+  socketTimeout: 30000,
+});
 
      await transporter.verify();
 
