@@ -12,13 +12,19 @@ exports.sendContactMail = async (req, res) => {
     // ✅ Direct config (NO ENV)
    const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
+      port: 587,
+      secure: false, // 587 ke liye false
+      requireTLS: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      family: 4, // 🔥 Force IPv4
     });
+
 
     await transporter.verify();
     // ✅ Mail content

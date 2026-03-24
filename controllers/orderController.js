@@ -20,20 +20,29 @@ exports.sendOrderMail = async (req, res) => {
     }
 
     // ✅ Transporter
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
+   const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // 587 ke liye false
+      requireTLS: true,
       auth: {
-        user: "tarun.mulhera@gmail.com",          // ✅ sender gmail
-        pass: "wica chtc iqjh rpid",          // ⚠️ Gmail App Password (generate one from your Google Account)
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      family: 4, // 🔥 Force IPv4
     });
 
+     await transporter.verify();
+
     // ✅ Mail Content
-    const mailOptions = {
-     from: `"SEST InfoTech" <tarun.mulhera@gmail.com>`, 
+    const info = await transporter.sendMail({
+      from: `"SEST InfoTech Contact Form" <${process.env.EMAIL_USER}>`,
       to: "tarun@sestinfotech.com",
       replyTo: email,
-      subject: "New Order Form Submission",
+      subject: "New Contact Form Submission",
       html: `
         <h2>New Order Form Submission</h2>
 
@@ -45,18 +54,22 @@ exports.sendOrderMail = async (req, res) => {
         <p><b>Organization:</b> ${organization}</p>
         <p><b>Message:</b> ${message || "N/A"}</p>
       `,
-    };
+    });
 
-    await transporter.sendMail(mailOptions);
+    console.log("Mail sent successfully:", info.messageId);
 
     res.status(200).json({
-      message: "Order submitted successfully ✅"
+      success: true,
+      message: "Email sent successfully ✅",
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("Contact Mail Error:", error);
+
     res.status(500).json({
-      message: "Failed to send email ❌"
+      success: false,
+      message: "Failed to send email ❌",
+      error: error.message,
     });
   }
 };
