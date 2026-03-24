@@ -1,6 +1,3 @@
-const dns = require("dns");
-dns.setDefaultResultOrder("ipv4first");
-
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
@@ -17,6 +14,10 @@ app.use(express.json());
 // Routes
 app.use("/api", contactRoutes);
 app.use("/api", orderRoutes);
+
+app.get("/", (req, res) => {
+  res.send("SEST Backend API Running ✅");
+});
 
 // Start server
 const PORT = process.env.PORT || 5000;

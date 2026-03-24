@@ -1,65 +1,128 @@
+// const nodemailer = require("nodemailer");
+
+// exports.sendContactMail = async (req, res) => {
+//   console.log("✅ NEW CONTACT CONTROLLER RUNNING");
+
+//   try {
+//     const { name, email, phone, message } = req.body;
+
+//     if (!name || !email || !phone || !message) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields are required",
+//       });
+//     }
+
+//     console.log("SMTP HOST => smtp.gmail.com");
+
+//     const transporter = nodemailer.createTransport({
+//       host: "smtp.gmail.com",
+//       port: 465,
+//       secure: true,
+//       auth: {
+//         user: "sest@sestinfotech.com",
+//         pass: "xyxzsjmpokrxmcve", // NO SPACES
+//       },
+//     });
+
+//     await transporter.verify();
+//     console.log("SMTP Connected Successfully ✅");
+
+//     const info = await transporter.sendMail({
+//       from: `"SEST InfoTech Contact Form" <sest@sestinfotech.com>`,
+//       to: "sest@sestinfotech.com",
+//       replyTo: email,
+//       subject: "New Contact Form Submission",
+//       html: `
+//         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+//           <h2 style="color:#333;">New Contact Form Submission</h2>
+//           <p><strong>Name:</strong> ${name}</p>
+//           <p><strong>Email:</strong> ${email}</p>
+//           <p><strong>Phone:</strong> ${phone}</p>
+//           <p><strong>Message:</strong> ${message}</p>
+//         </div>
+//       `,
+//     });
+
+//     console.log("Mail Sent:", info.messageId);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Email sent successfully ✅",
+//       messageId: info.messageId,
+//     });
+//   } catch (error) {
+//     console.error("Contact Mail Error:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to send email ❌",
+//       error: error.message,
+//     });
+//   }
+// };
+
+
 const nodemailer = require("nodemailer");
 
 exports.sendContactMail = async (req, res) => {
+  console.log("✅ NEW CONTACT CONTROLLER RUNNING");
+
   try {
     const { name, email, phone, message } = req.body;
 
     // Validation
     if (!name || !email || !phone || !message) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
 
-    // ✅ Direct config (NO ENV)
-   const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  family: 4, // force IPv4
-  tls: {
-    rejectUnauthorized: false,
-  },
-  connectionTimeout: 30000,
-  greetingTimeout: 30000,
-  socketTimeout: 30000,
-});
+    // Gmail transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "sest@sestinfotech.com",
+        pass: "olif pugw alzd lmxg", 
+      },
+    });
 
+    // Verify SMTP
     await transporter.verify();
-    // ✅ Mail content
+    console.log("✅ SMTP Connected Successfully");
+
+    // Send Mail
     const info = await transporter.sendMail({
-      from: `"SEST InfoTech Contact Form" <${process.env.EMAIL_USER}>`,
+      from: '"SEST InfoTech Contact Form" <sest@sestinfotech.com>',
       to: "sest@sestinfotech.com",
       replyTo: email,
       subject: "New Contact Form Submission",
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-          <h3>New Contact Request</h3>
-          <p><b>Name:</b> ${name}</p>
-          <p><b>Email:</b> ${email}</p>
-          <p><b>Phone:</b> ${phone}</p>
-          <p><b>Message:</b> ${message}</p>
+          <h2 style="color:#333;">New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone}</p>
+          <p><strong>Message:</strong> ${message}</p>
         </div>
       `,
     });
 
-    console.log("Mail sent successfully:", info.messageId);
+    console.log("✅ Mail Sent:", info.messageId);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Email sent successfully ✅",
+      messageId: info.messageId,
     });
   } catch (error) {
-    console.error("Contact Mail Error:", error);
+    console.error("❌ Contact Mail Error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to send email ❌",
       error: error.message,
     });
   }
-
 };
