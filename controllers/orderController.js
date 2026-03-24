@@ -16,13 +16,11 @@ exports.sendOrderMail = async (req, res) => {
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
-      secure: false,
-      requireTLS: true,
+      secure: false, // 587 => false
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: "sest@sestinfotech.com",
+        pass: "olif pugw alzd lmxg",
       },
-      family: 4, // force IPv4
       tls: {
         rejectUnauthorized: false,
       },
@@ -31,14 +29,16 @@ exports.sendOrderMail = async (req, res) => {
       socketTimeout: 30000,
     });
 
+    console.log("⏳ Verifying SMTP...");
     await transporter.verify();
+    console.log("✅ SMTP Connected Successfully");
 
     // ✅ Mail Content
     const info = await transporter.sendMail({
-      from: `"SEST InfoTech Contact Form" <${process.env.EMAIL_USER}>`,
+      from: '"SEST InfoTech Contact Form" <sest@sestinfotech.com>',
       to: "sest@sestinfotech.com",
       replyTo: email,
-      subject: "New Contact Form Submission",
+      subject: "New Order Form Submission",
       html: `
         <h2>New Order Form Submission</h2>
 
@@ -52,19 +52,21 @@ exports.sendOrderMail = async (req, res) => {
       `,
     });
 
-    console.log("Mail sent successfully:", info.messageId);
-
-    res.status(200).json({
+     return res.status(200).json({
       success: true,
       message: "Email sent successfully ✅",
+      messageId: info.messageId,
     });
   } catch (error) {
-    console.error("Contact Mail Error:", error);
+    console.error("❌ Contact Mail Error FULL:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to send email ❌",
       error: error.message,
+      code: error.code || null,
+      response: error.response || null,
+      responseCode: error.responseCode || null,
     });
   }
 };

@@ -1,11 +1,10 @@
 // const nodemailer = require("nodemailer");
 
 // exports.sendContactMail = async (req, res) => {
-//   console.log("✅ NEW CONTACT CONTROLLER RUNNING");
-
 //   try {
 //     const { name, email, phone, message } = req.body;
 
+//     // Validation
 //     if (!name || !email || !phone || !message) {
 //       return res.status(400).json({
 //         success: false,
@@ -13,23 +12,22 @@
 //       });
 //     }
 
-//     console.log("SMTP HOST => smtp.gmail.com");
-
+//     // Gmail transporter
 //     const transporter = nodemailer.createTransport({
-//       host: "smtp.gmail.com",
-//       port: 465,
-//       secure: true,
+//       service: "gmail",
 //       auth: {
 //         user: "sest@sestinfotech.com",
-//         pass: "xyxzsjmpokrxmcve", // NO SPACES
+//         pass: "olif pugw alzd lmxg", 
 //       },
 //     });
 
+//     // Verify SMTP
 //     await transporter.verify();
-//     console.log("SMTP Connected Successfully ✅");
+//     console.log("✅ SMTP Connected Successfully");
 
+//     // Send Mail
 //     const info = await transporter.sendMail({
-//       from: `"SEST InfoTech Contact Form" <sest@sestinfotech.com>`,
+//       from: '"SEST InfoTech Contact Form" <sest@sestinfotech.com>',
 //       to: "sest@sestinfotech.com",
 //       replyTo: email,
 //       subject: "New Contact Form Submission",
@@ -44,7 +42,7 @@
 //       `,
 //     });
 
-//     console.log("Mail Sent:", info.messageId);
+//     console.log("✅ Mail Sent:", info.messageId);
 
 //     return res.status(200).json({
 //       success: true,
@@ -52,7 +50,7 @@
 //       messageId: info.messageId,
 //     });
 //   } catch (error) {
-//     console.error("Contact Mail Error:", error);
+//     console.error("❌ Contact Mail Error:", error);
 
 //     return res.status(500).json({
 //       success: false,
@@ -66,8 +64,6 @@
 const nodemailer = require("nodemailer");
 
 exports.sendContactMail = async (req, res) => {
-  console.log("✅ NEW CONTACT CONTROLLER RUNNING");
-
   try {
     const { name, email, phone, message } = req.body;
 
@@ -79,16 +75,24 @@ exports.sendContactMail = async (req, res) => {
       });
     }
 
-    // Gmail transporter
+    // Gmail SMTP Transporter (Render Friendly)
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // 587 => false
       auth: {
         user: "sest@sestinfotech.com",
-        pass: "olif pugw alzd lmxg", 
+       pass: "olif pugw alzd lmxg", 
       },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 30000,
     });
 
-    // Verify SMTP
+    console.log("⏳ Verifying SMTP...");
     await transporter.verify();
     console.log("✅ SMTP Connected Successfully");
 
@@ -117,12 +121,15 @@ exports.sendContactMail = async (req, res) => {
       messageId: info.messageId,
     });
   } catch (error) {
-    console.error("❌ Contact Mail Error:", error);
+    console.error("❌ Contact Mail Error FULL:", error);
 
     return res.status(500).json({
       success: false,
       message: "Failed to send email ❌",
       error: error.message,
+      code: error.code || null,
+      response: error.response || null,
+      responseCode: error.responseCode || null,
     });
   }
 };
