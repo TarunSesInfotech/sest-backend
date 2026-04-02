@@ -23,7 +23,7 @@ exports.sendContactMail = async (req, res) => {
 
     // Verify SMTP
     await transporter.verify();
-    console.log("✅ SMTP Connected Successfully");
+    console.log("✅ SMTP Connected Successfully hai ");
 
     // Send Mail
     const info = await transporter.sendMail({
