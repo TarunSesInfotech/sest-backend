@@ -17,7 +17,7 @@ exports.sendContactMail = async (req, res) => {
       service: "gmail",
       auth: {
         user: "sest@sestinfotech.com",
-        pass: "olif pugw alzd lmxg", 
+        pass: "olifpugwalzdlmxg", 
       },
     });
 
