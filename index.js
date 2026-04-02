@@ -15,7 +15,7 @@ app.use(express.json());
 app.use("/api", contactRoutes);
 app.use("/api", orderRoutes);
 
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.send("SEST Backend API Running ✅");
 });
 
