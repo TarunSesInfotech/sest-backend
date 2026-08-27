@@ -8,7 +8,7 @@ exports.sendOrderMail = async (req, res) => {
     // ✅ Validation
     if (!firstName || !lastName || !email || !phone || !city || !organization) {
       return res.status(400).json({
-        message: "All required fields must be filled",
+        message: "All required fields must be  filled",
       });
     }
 
